@@ -28,36 +28,29 @@ Installation via pip is suggested.
 #### Service Registration Example
 `````python
 import ZeroconfRegisterService
-import time
+from flask import Flask
 
-def register_service():
-    config_object={
-        'name':'my_service'
-        'type':'mesh',
-        'protocol':'tcp',
-        'address':'192.168.1.1'
-        'port':8000,
-        'server_name':'myservice.p2p'
-    }
+app=Flask(__name__)
 
-    ZeroconfRegisterService.register_service(config_object)
+@app.route('/')
+def index():
+    return "Hello World"
 
-    """
-        This is added just not to kill the Zeroconf module
-        which automatically invokes destroy callback within 
-        the modules to unregister services and close Zeroconf.
-        
-        This is not required for a normal application like a
-        web application, which would have a shutdown mechanism
-        and at that time the destroy callback is called within
-        the ZeroconfRegisterService module for cleanup activities.
-    """
-    while True:
-        time.sleep(0.1)
+config_object={
+    'name':'my_web_app',
+    'type':'mesh',
+    'protocol':'tcp',
+    'address':'192.168.1.1'
+    'port':8000,
+    'server_name':'mywebapp.p2p'
+}
 
 if __name__=='__main__':
-    register_service()
+    ZeroconfRegisterService.register_service(config_object)
+    app.run(debug=True,use_reloader=False)
 `````
 
 ---------------------
-GNU GPL V3 LICENSE
+LICENSE
+
+GNU GPL V3. Refer to the LICENSE files for details
