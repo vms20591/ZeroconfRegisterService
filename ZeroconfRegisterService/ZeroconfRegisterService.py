@@ -95,7 +95,7 @@ def register_service(config_object={}):
         register with it.
 
             config_object={
-                'name':'mediagoblin'
+                'name':'mediagoblin',
                 'type':'mesh',
                 'protocol':'tcp',
                 'address':'192.168.1.1'
@@ -105,6 +105,9 @@ def register_service(config_object={}):
 
             register_service(config_object)
     """
+
+    #Initialise host to find the IP address of the current default interface
+    initialise_host()
 
     logger.debug("Creating a new thread to register the service and start it")
     ZeroconfService(config_object,zeroconf).start()
