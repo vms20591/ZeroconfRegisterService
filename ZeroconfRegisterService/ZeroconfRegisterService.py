@@ -65,7 +65,7 @@ def initialise_host():
     logger.debug("Inteface for default gateway is: "+interface)
 
     ADDRESS=netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']
-    logger.debug("IP address of %s is %s"%(socket.gethostname()+ADDRESS))
+    logger.debug("IP address of %s is %s"%(socket.gethostname(),ADDRESS))
 
 def close_zeroconf():
     """
