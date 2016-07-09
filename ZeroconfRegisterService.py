@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    ZeroconfRegister is module written with the following usecase in
+    ZeroconfRegisterService is module written with the following usecase in
     mind,
 
         1) Various sevices running in the system can register them
@@ -29,6 +29,11 @@ import logging
 import hashlib
 import os
 from zeroconf import Zeroconf,ServiceInfo
+
+__author__ = 'Meenakshi Sundaram V'
+__maintainer__ = 'Meenakshi Sundaram <vms20591@gmail.com>'
+__version__ = '0.1'
+__license__ = 'GPL V3'
 
 #Only register_service is required by clients to register their service
 __all__ = ['register_service']
