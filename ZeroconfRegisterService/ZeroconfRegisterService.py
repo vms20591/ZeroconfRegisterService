@@ -23,11 +23,11 @@
 import socket
 import time
 import netifaces
-import threading
 import atexit
 import logging
 import hashlib
 import os
+import signal
 from zeroconf import Zeroconf,ServiceInfo
 
 __author__ = 'Meenakshi Sundaram V'
@@ -105,21 +105,19 @@ def register_service(config_object={}):
 
             register_service(config_object)
     """
+    
+    #global zeroconf_service
 
     #Initialise host to find the IP address of the current default interface
     initialise_host()
 
     logger.debug("Creating a new thread to register the service and start it")
-    ZeroconfService(config_object,zeroconf).start()
+    ZeroconfService(config_object,zeroconf).register_service()
 
-class ZeroconfService(threading.Thread):
+class ZeroconfService():
     """
         ZeroconfService is the heart of the module which runs as a daemon thread
         and registers the client as a service.
-
-        This is subclassed as a daemon thread because, once the client calls this API
-        from their function and once it terminates we don't want the zeroconf object
-        to be garbage collected.
     """
 
     def __init__(self,config_object={},zeroconf=None):
@@ -131,12 +129,6 @@ class ZeroconfService(threading.Thread):
             :type zeroconf:         :class: Zeroconf instance
         """
 
-        #call the parent constructor
-        threading.Thread.__init__(self)
-
-        #Mark this thread as daemon
-        self.daemon=True
-
         #store in the config object in the instance
         self.config_object=config_object
 
@@ -146,14 +138,6 @@ class ZeroconfService(threading.Thread):
             self.zeroconf=Zeroconf()
         else:
             self.zeroconf=zeroconf
-
-    def run(self):
-        """
-            call register_service instance method to kick off
-            the registration activity
-        """
-
-        self.register_service()
 
     def form_zeroconf_qualified_name(self):
         """
@@ -232,4 +216,19 @@ class ZeroconfService(threading.Thread):
         1) Unregister all the services with the current instance
         2) Close Zeroconf
 """
-atexit.register(close_zeroconf)
+def signal_handler(num,stack):
+    logger.error("Received interrupt signal from Python: %d"%num)
+    logger.error("Initiating shutdown activities for Zeroconf")
+    close_zeroconf()
+    logger.error("Shutdown activities completed for Zeroconf")
+    
+    raise SystemExit('Exiting ZeroconfRegisterService')
+
+#Handle keyboard interrupt signal
+signal.signal(signal.SIGINT, signal_handler)
+
+#Handle IPC interrupt signal
+signal.signal(signal.SIGUSR1, signal_handler)
+
+#Handler TERM interrupt signal
+signal.signal(signal.SIGTERM, signal_handler)
