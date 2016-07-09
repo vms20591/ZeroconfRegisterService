@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='ZerconfRegisterService',
+    name='ZeroconfRegisterService',
     version='0.1',
     author='Meenakshi Sundaram',
     author_email='vms20591@gmail.com',
